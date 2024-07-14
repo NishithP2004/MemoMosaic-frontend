@@ -1,26 +1,56 @@
-import { Button, Rows, Text } from "@canva/app-ui-kit";
-import { addNativeElement } from "@canva/design";
+import {
+  Button,
+  Rows,
+  Text,
+  Tabs,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tab,
+  CogIcon,
+  PencilIcon,
+} from "@canva/app-ui-kit";
 import styles from "styles/components.css";
+import { SettingsTab } from "./components/SettingsTab";
+import { CreateTab } from "./components/CreateTab";
+import { useState } from "react";
 
 export const App = () => {
-  const onClick = () => {
-    addNativeElement({
-      type: "TEXT",
-      children: ["Hello world!"],
-    });
-  };
+  const [playHTCred, setPlayHTCred] = useState<PlayHTCredentials>({
+    userId: "",
+    secretKey: "",
+    audio: "",
+    gender: "male",
+  });
 
   return (
     <div className={styles.scrollContainer}>
-      <Rows spacing="2u">
-        <Text>
-          To make changes to this app, edit the <code>src/app.tsx</code> file,
-          then close and reopen the app in the editor to preview the changes.
-        </Text>
-        <Button variant="primary" onClick={onClick} stretch>
-          Do something cool
-        </Button>
-      </Rows>
+      <Tabs>
+        <Rows spacing="2u">
+          <TabList>
+            <Tab id="create" start={<PencilIcon />}>
+              Create
+            </Tab>
+            <Tab id="settings" start={<CogIcon />}>
+              Settings
+            </Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel id="create">
+              <CreateTab
+                playHTCred={playHTCred}
+                setPlayHTCred={setPlayHTCred}
+              />
+            </TabPanel>
+            <TabPanel id="settings">
+              <SettingsTab
+                playHTCred={playHTCred}
+                setPlayHTCred={setPlayHTCred}
+              />
+            </TabPanel>
+          </TabPanels>
+        </Rows>
+      </Tabs>
     </div>
   );
 };
