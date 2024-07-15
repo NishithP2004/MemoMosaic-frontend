@@ -44,13 +44,10 @@ export const Stage0 = ({ setStage, payload, setPayload }) => {
         const buffer = Buffer.from(arrayBuffer).toString("base64");
         let tags;
 
-        try {
+        if (file.type.startsWith("image")) {
           tags = await ExifReader.load(arrayBuffer, {
             expanded: true,
           });
-        } catch (err) {
-          console.error(err);
-          throw err;
         }
 
         const gps = {
@@ -73,12 +70,10 @@ export const Stage0 = ({ setStage, payload, setPayload }) => {
         return {
           buffer: buffer,
           mimeType: file.type,
-          location: locationData.name
-            ? locationData.name + ", " + locationData.address.city
-            : "",
+          location: locationData.name ? locationData.display_name : "",
           creation_time: tags?.exif?.["DateTimeOriginal"]?.description
             ? parseDateString(tags?.exif?.["DateTimeOriginal"]?.description)
-            : undefined,
+            : new Date().toISOString(),
           type: file.type.startsWith("image")
             ? "IMAGE"
             : file.type.startsWith("video")

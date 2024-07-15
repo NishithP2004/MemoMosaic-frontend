@@ -9,7 +9,7 @@ export const Stage3 = ({
   setScript,
   playHTCred,
 }) => {
-  const BACKEND_URL = "https://69dc-49-205-142-70.ngrok-free.app";
+  const BACKEND_URL = "https://a70f-49-205-142-70.ngrok-free.app";
   async function create(payload) {
     try {
       let response = await fetch(`${BACKEND_URL}/create`, {

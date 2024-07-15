@@ -30,6 +30,7 @@
     "@canva/platform": "^1.1.0",
     "@canva/preview": "./sdk/preview",
     "@canva/user": "^1.0.0",
+    "@rajesh896/video-thumbnails-generator": "^2.3.9",
     "buffer": "^6.0.3",
     "exifreader": "^4.23.3",
     "react": "^18.3.1",
