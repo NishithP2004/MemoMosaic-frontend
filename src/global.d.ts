@@ -38,3 +38,8 @@ type Script = {
   hastags: string[];
   scenes: Scene[];
 };
+
+type Annotation = {
+  buffer: string;
+  annotation?: string;
+}

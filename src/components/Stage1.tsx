@@ -36,7 +36,7 @@ async function searchCompletions(q) {
   return results.map((place) => place.display_name);
 }
 
-export const Stage1 = ({ setStage, payload, setPayload }) => {
+export const Stage1 = ({ setStage, payload, setPayload, annotations }) => {
   const [options, setOptions] = useState([
     {
       label: "",
@@ -148,7 +148,13 @@ export const Stage1 = ({ setStage, payload, setPayload }) => {
       >
         Next
       </Button>
-      <Button onClick={() => setStage(0)} variant="secondary" stretch>
+      <Button onClick={() => {
+        if(annotations.length > 0) {
+          setStage(5);
+        } else {
+          setStage(0);
+        }
+      }} variant="secondary" stretch>
         Back
       </Button>
     </Rows>

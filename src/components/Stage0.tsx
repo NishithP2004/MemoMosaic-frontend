@@ -22,6 +22,30 @@ async function reverseGeocode(gps) {
   }
 }
 
+async function extractFaces(assets) {
+  const BACKEND_URL = "https://5f1f-49-205-142-70.ngrok-free.app";
+
+  try {
+    const images = assets
+      .filter((asset) => asset.type === "IMAGE")
+      .map((asset) => asset.buffer);
+
+    const detections = await fetch(`${BACKEND_URL}/extractFaces`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        images: images,
+      }),
+    }).then((res) => res.json());
+
+    return detections.faces || [];
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 function parseDateString(DateTimeOriginal) {
   let args = DateTimeOriginal.split(" ");
   let [YYYY, MM, DD] = args[0].split(":");
@@ -30,7 +54,13 @@ function parseDateString(DateTimeOriginal) {
   return new Date(YYYY, MM - 1, DD, hh, mm, ss).toISOString();
 }
 
-export const Stage0 = ({ setStage, payload, setPayload }) => {
+export const Stage0 = ({
+  setStage,
+  payload,
+  setPayload,
+  annotations,
+  setAnnotations,
+}) => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
 
@@ -90,8 +120,23 @@ export const Stage0 = ({ setStage, payload, setPayload }) => {
       };
     });
 
+    const faces = await extractFaces(assets);
+
+    setAnnotations(
+      faces.map((face) => {
+        return {
+          buffer: face,
+          annotation: "",
+        };
+      })
+    );
+
     setLoading(false);
-    setStage(1);
+
+    if (faces.length > 0) 
+      setStage(5);
+    else 
+      setStage(1);
   };
 
   return (
