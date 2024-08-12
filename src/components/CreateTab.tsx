@@ -30,7 +30,12 @@ export const CreateTab = ({ playHTCred, setPlayHTCred }) => {
     );
   } else if (stage === 1) {
     return (
-      <Stage1 setStage={setStage} payload={payload} setPayload={setPayload} annotations={annotations} />
+      <Stage1
+        setStage={setStage}
+        payload={payload}
+        setPayload={setPayload}
+        annotations={annotations}
+      />
     );
   } else if (stage === 2) {
     return (
@@ -58,7 +63,7 @@ export const CreateTab = ({ playHTCred, setPlayHTCred }) => {
         setAnnotations={setAnnotations}
       />
     );
-  } 
+  }
 
   return null;
 };

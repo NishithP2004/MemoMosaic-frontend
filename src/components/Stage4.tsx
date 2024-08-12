@@ -5,6 +5,7 @@ import {
   Button,
   ImageCard,
   VideoCard,
+  Alert,
 } from "@canva/app-ui-kit";
 import { addAudioTrack, addNativeElement, addPage } from "@canva/design";
 import {
@@ -157,7 +158,7 @@ export const Stage4 = ({ setStage, script }) => {
         },
         {
           type: "TEXT",
-          children: [script.hashtags.join(" ")],
+          children: [script.hashtags.map(hash => (hash.startsWith("#")? hash: `#${hash}`)).join(" ")],
           top: 300,
           left: 0,
           textAlign: "center",
@@ -207,52 +208,62 @@ export const Stage4 = ({ setStage, script }) => {
 
   return (
     <Rows spacing="2u">
-      {script.scenes.map((scene: Scene) => {
-        return (
-          <Box
-            key={"Scene " + scene.scene}
-            padding="2u"
-            display="flex"
-            flexDirection="column"
-            width="full"
-            background="canvas"
-            borderRadius="large"
-          >
-            {scene.type === "IMAGE" ? (
-              <ImageCard
-                ariaLabel={`Collage ${scene.scene}`}
-                thumbnailUrl={`data:${scene.mimeType};base64,${scene.collage}`}
-                onClick={(ev) => {}}
-                borderRadius="standard"
-              />
-            ) : (
-              <VideoCard
-                ariaLabel={`Collage ${scene.scene}`}
-                thumbnailUrl={
-                  thumbnails[scene.collage] ||
-                  "https://i.imgur.com/yzNoPFi.jpeg"
-                }
-                mimeType={getVideoMimeType(scene.mimeType)}
-                onClick={(ev) => {}}
-                borderRadius="standard"
-                videoPreviewUrl={`data:${scene.mimeType};base64,${scene.collage}`}
-              />
-            )}
-            <Box paddingTop="1u">
-              <Text>{scene.narrative}</Text>
+      {script ? (
+        script.scenes.map((scene: Scene) => {
+          return (
+            <Box
+              key={"Scene " + scene.scene}
+              padding="2u"
+              display="flex"
+              flexDirection="column"
+              width="full"
+              background="canvas"
+              borderRadius="large"
+            >
+              {scene.type === "IMAGE" ? (
+                <ImageCard
+                  ariaLabel={`Collage ${scene.scene}`}
+                  thumbnailUrl={`data:${scene.mimeType};base64,${scene.collage}`}
+                  onClick={(ev) => {}}
+                  borderRadius="standard"
+                />
+              ) : (
+                <VideoCard
+                  ariaLabel={`Collage ${scene.scene}`}
+                  thumbnailUrl={
+                    thumbnails[scene.collage] ||
+                    "https://i.imgur.com/yzNoPFi.jpeg"
+                  }
+                  mimeType={getVideoMimeType(scene.mimeType)}
+                  onClick={(ev) => {}}
+                  borderRadius="standard"
+                  videoPreviewUrl={`data:${scene.mimeType};base64,${scene.collage}`}
+                />
+              )}
+              <Box paddingTop="1u">
+                <Text>{scene.narrative}</Text>
+              </Box>
             </Box>
-          </Box>
-        );
-      })}
-      <Button
-        onClick={() => {
-          addToPage();
-        }}
-        variant="primary"
-        stretch
-      >
-        Add Pages
-      </Button>
+          );
+        })
+      ) : (
+        <Alert tone="critical" title="Error: ">
+          {"Oops! Something went wrong. Please try again."}
+        </Alert>
+      )}
+      {script ? (
+        <Button
+          onClick={() => {
+            addToPage();
+          }}
+          variant="primary"
+          stretch
+        >
+          Add Pages
+        </Button>
+      ) : (
+        ""
+      )}
       <Button onClick={() => setStage(0)} variant="secondary" stretch>
         Start Over
       </Button>

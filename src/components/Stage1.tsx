@@ -148,13 +148,17 @@ export const Stage1 = ({ setStage, payload, setPayload, annotations }) => {
       >
         Next
       </Button>
-      <Button onClick={() => {
-        if(annotations.length > 0) {
-          setStage(5);
-        } else {
-          setStage(0);
-        }
-      }} variant="secondary" stretch>
+      <Button
+        onClick={() => {
+          if (annotations.length > 0) {
+            setStage(5);
+          } else {
+            setStage(0);
+          }
+        }}
+        variant="secondary"
+        stretch
+      >
         Back
       </Button>
     </Rows>

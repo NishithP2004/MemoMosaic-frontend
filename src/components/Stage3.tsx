@@ -8,12 +8,11 @@ export const Stage3 = ({
   script,
   setScript,
   playHTCred,
-  annotations
+  annotations,
 }) => {
-  const BACKEND_URL = "https://5f1f-49-205-142-70.ngrok-free.app";
   async function create(payload) {
     try {
-      let response = await fetch(`${BACKEND_URL}/create`, {
+      let response = await fetch(`${BACKEND_HOST}/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -21,7 +20,7 @@ export const Stage3 = ({
         body: JSON.stringify({
           ...payload,
           playHTCred: playHTCred,
-          annotations: annotations
+          annotations: annotations,
         }),
       }).then((r) => r.json());
       console.log(response);

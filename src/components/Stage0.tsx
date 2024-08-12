@@ -5,6 +5,7 @@ import {
   FileInput,
   FileInputItem,
   SegmentedControl,
+  Alert,
 } from "@canva/app-ui-kit";
 import { useState } from "react";
 import ExifReader from "exifreader";
@@ -23,14 +24,12 @@ async function reverseGeocode(gps) {
 }
 
 async function extractFaces(assets) {
-  const BACKEND_URL = "https://5f1f-49-205-142-70.ngrok-free.app";
-
   try {
     const images = assets
       .filter((asset) => asset.type === "IMAGE")
       .map((asset) => asset.buffer);
 
-    const detections = await fetch(`${BACKEND_URL}/extractFaces`, {
+    const detections = await fetch(`${BACKEND_HOST}/extractFaces`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,6 +42,7 @@ async function extractFaces(assets) {
     return detections.faces || [];
   } catch (err) {
     console.error(err);
+    throw err;
   }
 }
 
@@ -63,6 +63,7 @@ export const Stage0 = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
+  const [error, setError] = useState<string>();
 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
@@ -120,28 +121,33 @@ export const Stage0 = ({
       };
     });
 
-    const faces = await extractFaces(assets);
+    try {
+      const faces = await extractFaces(assets);
 
-    setAnnotations(
-      faces.map((face) => {
-        return {
-          buffer: face,
-          annotation: "",
-        };
-      })
-    );
+      setAnnotations(
+        faces.map((face) => {
+          return {
+            buffer: face,
+            annotation: "",
+          };
+        })
+      );
 
-    setLoading(false);
+      setLoading(false);
+      setError("");
 
-    if (faces.length > 0) 
-      setStage(5);
-    else 
-      setStage(1);
+      if (faces.length > 0) setStage(5);
+      else setStage(1);
+    } catch (err) {
+      setError("Oops! Something went wrong. Please try again.");
+      setLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <Rows spacing="2u">
+        {error ? <Alert tone="critical">{error}</Alert> : ""}
         <FormField
           control={() => (
             <>
@@ -168,6 +174,7 @@ export const Stage0 = ({
             </>
           )}
           label="Upload your Assets"
+          description="The size of uploaded assets must not exceed 20MB."
         />
         <FormField
           control={() => (
@@ -214,6 +221,7 @@ export const Stage0 = ({
             setFiles((prev) => {
               return [];
             });
+            setLoading(false);
           }}
         >
           Reset
